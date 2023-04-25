@@ -32,7 +32,7 @@ namespace SpecFlowProjectDemo.StepDefinitions
         public void ThenSearchForSeleniumTutorials()
         {
             driver.FindElement(By.XPath("//*[@id='APjFqb']")).SendKeys("Selenium Tutorial");
-            driver.FindElement(By.XPath("//*[@id='APjFqb']")).SendKeys(Keys.Enter);
+            driver.FindElement(By.XPath("//*[@id='APjFqb1']")).SendKeys(Keys.Enter);
             Thread.Sleep(1000);
             driver.FindElement(By.LinkText("Selenium Tutorial PDF")).Click();
             string title = driver.Title.ToString();
