@@ -1,6 +1,7 @@
 ﻿using AventStack.ExtentReports;
 using AventStack.ExtentReports.Reporter;
 using AventStack.ExtentReports.Reporter.Configuration;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,9 +39,13 @@ namespace SpecFlowProjectDemo.Utility
         {
             _extentReports.Flush();
         }
-
-
-
-
+        public string addScreenshot(IWebDriver driver, ScenarioContext scenarioContext)
+        {
+            ITakesScreenshot takesScreenshot = (ITakesScreenshot)driver;
+            Screenshot screenshot = takesScreenshot.GetScreenshot();
+            string screenshotLocation = Path.Combine(testResultPath, scenarioContext.ScenarioInfo.Title + ".png");
+            screenshot.SaveAsFile(screenshotLocation, ScreenshotImageFormat.Png);
+            return "screenshotLocation";
+        }
     }
 }
