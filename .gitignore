@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Features/DataDrivenTesting.feature.cs
+/Features/DataTableDataDrivenTesting.feature.cs
+/Features/ExamplesDataDrivenTesting.feature.cs
