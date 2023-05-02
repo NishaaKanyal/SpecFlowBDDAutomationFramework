@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /Features/DataDrivenTesting.feature.cs
 /Features/DataTableDataDrivenTesting.feature.cs
 /Features/ExamplesDataDrivenTesting.feature.cs
+/Features/PageObjectModel.feature.cs
