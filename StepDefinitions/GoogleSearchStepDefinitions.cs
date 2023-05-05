@@ -1,6 +1,8 @@
+using Gherkin.CucumberMessages.Types;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using System.Security.Policy;
 
 namespace SpecFlowProjectDemo.StepDefinitions
 {
@@ -24,6 +26,7 @@ namespace SpecFlowProjectDemo.StepDefinitions
         [When(@"Enter the URL")]
         public void WhenEnterTheURL()
         {
+            Thread.Sleep(1000);
             driver.Url = "https://www.google.com/";
             Thread.Sleep(2000);
         }
@@ -32,7 +35,7 @@ namespace SpecFlowProjectDemo.StepDefinitions
         public void ThenSearchForSeleniumTutorials()
         {
             driver.FindElement(By.XPath("//*[@id='APjFqb']")).SendKeys("Selenium Tutorial");
-            driver.FindElement(By.XPath("//*[@id='APjFqb1']")).SendKeys(Keys.Enter);
+            driver.FindElement(By.XPath("//*[@id='APjFqb']")).SendKeys(Keys.Enter);
             Thread.Sleep(1000);
             driver.FindElement(By.LinkText("Selenium Tutorial PDF")).Click();
             string title = driver.Title.ToString();
@@ -58,6 +61,8 @@ namespace SpecFlowProjectDemo.StepDefinitions
             Thread.Sleep(1000);
             //driver.Quit();
         }
+
+
 
     }
 }

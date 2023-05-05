@@ -1,19 +1,32 @@
 ﻿using AventStack.ExtentReports;
 using AventStack.ExtentReports.Gherkin.Model;
 using BoDi;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using SpecFlowProjectDemo.Driver;
 using SpecFlowProjectDemo.Utility;
+using System.IO;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using TechTalk.SpecFlow;
 
 namespace SpecFlowProjectDemo.Hooks
 {
     [Binding]
-    public sealed class Hooks: ExtentReport
+    public class HookInitialization: ExtentReport
     {
         private readonly IObjectContainer _container;
+        public static Startup startup;
+        IWebDriver driver;
+        //static readonly string PATH = "\\SpecFlow_BDD_Training\\Configuration\\";
+        static readonly string configSettingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Configuration\\ConfigSettings.json");
 
-        public Hooks(IObjectContainer container)
+
+        public HookInitialization(IObjectContainer container)
         {
             _container = container;
         }
@@ -25,7 +38,24 @@ namespace SpecFlowProjectDemo.Hooks
             ExtentReportInit();
         }
 
-        [AfterTestRun]
+        [BeforeScenario]
+        public void BeforeTestRun1()
+        {
+            try
+            {
+                startup = new Startup();
+                ConfigurationBuilder builder = new ConfigurationBuilder();
+                builder.AddJsonFile(configSettingPath);
+                IConfiguration configuration = builder.Build();
+                configuration.Bind(startup);
+            }
+            catch (Exception e)
+            {
+                Assert.IsFalse(false, $"Failed_To_Initialize_Configuration={e.Message}");
+            }
+            }
+
+            [AfterTestRun]
         public static void AfterTestRun()
         {
             Console.WriteLine("Running after test run");
@@ -40,21 +70,29 @@ namespace SpecFlowProjectDemo.Hooks
             ExtentReportTearDown();
         }
 
-        [BeforeScenario("@GoogleSearch")]
-        public void BeforeScenarioWithTag()
+      
+        [BeforeScenario]
+        [Obsolete]
+        public void BeforeScenario(ScenarioContext scenarioContext)
         {
-            Console.WriteLine("First step running in the Specflow file");
-        }
-
-        [BeforeScenario(Order = 1)]
-        public void FirstBeforeScenario(ScenarioContext scenarioContext)
-        {
+            BeforeTestRun1();
+            //string browserValue = startup.BrowserType.ToString();
+           // SelectBrowserInHeadlessMode(browserValue);
             IWebDriver driver = new ChromeDriver();
             driver.Manage().Window.Maximize();
             _container.RegisterInstanceAs<IWebDriver>(driver);
             _scenario = _feature.CreateNode<Scenario>(scenarioContext.ScenarioInfo.Title);
-            
+            Thread.Sleep(1000);
         }
+    
+
+        [BeforeScenario("@GoogleSearch")]
+        public void BeforeScenarioWithTag()
+        {
+            Console.WriteLine("First step running in the Specflow file");
+
+        }
+         
 
         [AfterScenario]
         public void AfterScenario()
@@ -66,7 +104,21 @@ namespace SpecFlowProjectDemo.Hooks
             }
         }
 
-        [AfterStep]
+        public void SelectBrowserInHeadlessMode(string browserType)
+        {
+                switch (browserType)
+                {
+                    case "Chrome":
+
+
+                    IWebDriver driver = new ChromeDriver();
+                    driver.Manage().Window.Maximize();
+                    break;
+                }
+        }
+            
+
+                        [AfterStep]
         public void AfterStep(ScenarioContext scenarioContext)
         {
             var stepType = scenarioContext.StepContext.StepInfo.StepDefinitionType.ToString();
